@@ -1,0 +1,55 @@
+{
+  "name": "api",
+  "build": {
+    "builder": "DOCKERFILE",
+    "dockerfilePath": "Dockerfile"
+  },
+  "deploy": {
+    "startCommand": "uvicorn app.main:app --host 0.0.0.0 --port $PORT",
+    "restartPolicyType": "ON_FAILURE",
+    "healthcheckPath": "/health",
+    "healthcheckTimeout": 100
+  },
+  "source": {
+    "rootDirectory": "api"
+  },
+  "env": {
+    "TELEGRAM_BOT_TOKEN": {
+      "description": "Telegram Bot Token",
+      "required": true
+    },
+    "SECRET_KEY": {
+      "description": "Secret key for JWT",
+      "required": true
+    },
+    "MARZBAN_API_URL": {
+      "description": "Marzban API URL",
+      "required": true
+    },
+    "MARZBAN_USERNAME": {
+      "description": "Marzban Admin Username",
+      "required": true
+    },
+    "MARZBAN_PASSWORD": {
+      "description": "Marzban Admin Password",
+      "required": true
+    },
+    "CORS_ORIGINS": {
+      "description": "Allowed CORS origins (comma separated)",
+      "default": "*"
+    },
+    "REDIS_URL": {
+      "description": "Redis connection URL",
+      "default": "${{Redis.REDIS_URL}}"
+    },
+    "API_HOST": {
+      "default": "0.0.0.0"
+    },
+    "API_PORT": {
+      "default": "$PORT"
+    }
+  },
+  "networking": {
+    "generateDomain": true
+  }
+}

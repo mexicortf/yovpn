@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - YoVPN Admin{% endblock %}
+{% block page_title %}📊 Dashboard{% endblock %}
+
+{% block content %}
+<!-- Statistics Cards -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <!-- Total Users -->
+    <div class="stat-card bg-gradient-to-br from-blue-500 to-blue-600">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-blue-100 text-sm">Всего пользователей</p>
+                <p class="text-3xl font-bold mt-2">{{ total_users }}</p>
+            </div>
+            <div class="text-5xl opacity-50">
+                <i class="fas fa-users"></i>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Active Subscriptions -->
+    <div class="stat-card bg-gradient-to-br from-green-500 to-green-600">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-green-100 text-sm">Активных подписок</p>
+                <p class="text-3xl font-bold mt-2">{{ active_subscriptions }}</p>
+            </div>
+            <div class="text-5xl opacity-50">
+                <i class="fas fa-satellite-dish"></i>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Total Balance -->
+    <div class="stat-card bg-gradient-to-br from-purple-500 to-purple-600">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-purple-100 text-sm">Общий баланс</p>
+                <p class="text-3xl font-bold mt-2">{{ total_balance|currency }}</p>
+            </div>
+            <div class="text-5xl opacity-50">
+                <i class="fas fa-wallet"></i>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Total Transactions -->
+    <div class="stat-card bg-gradient-to-br from-orange-500 to-orange-600">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-orange-100 text-sm">Транзакций</p>
+                <p class="text-3xl font-bold mt-2">{{ total_transactions }}</p>
+            </div>
+            <div class="text-5xl opacity-50">
+                <i class="fas fa-exchange-alt"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <a href="/admin/broadcast" class="card hover:shadow-xl transition-shadow cursor-pointer">
+        <div class="flex items-center gap-4">
+            <div class="text-4xl">📡</div>
+            <div>
+                <h3 class="font-semibold text-lg">Создать рассылку</h3>
+                <p class="text-gray-600 text-sm">Отправить сообщение всем пользователям</p>
+            </div>
+        </div>
+    </a>
+    
+    <a href="/admin/users" class="card hover:shadow-xl transition-shadow cursor-pointer">
+        <div class="flex items-center gap-4">
+            <div class="text-4xl">👥</div>
+            <div>
+                <h3 class="font-semibold text-lg">Управление пользователями</h3>
+                <p class="text-gray-600 text-sm">Просмотр и редактирование</p>
+            </div>
+        </div>
+    </a>
+    
+    <a href="/admin/settings" class="card hover:shadow-xl transition-shadow cursor-pointer">
+        <div class="flex items-center gap-4">
+            <div class="text-4xl">⚙️</div>
+            <div>
+                <h3 class="font-semibold text-lg">Настройки</h3>
+                <p class="text-gray-600 text-sm">Конфигурация бота</p>
+            </div>
+        </div>
+    </a>
+</div>
+
+<!-- Recent Users -->
+{% if recent_users %}
+<div class="card">
+    <h3 class="text-xl font-semibold mb-4">Последние пользователи</h3>
+    <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead>
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Username</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Баланс</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Статус</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Дата регистрации</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+                {% for user in recent_users %}
+                <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">{{ user.tg_id }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                        <a href="/admin/users/{{ user.id }}" class="text-blue-600 hover:underline">
+                            {{ user.username or "Без username" }}
+                        </a>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">{{ user.balance|currency }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                        {% if user.is_blocked %}
+                            <span class="px-2 py-1 text-xs rounded-full bg-red-100 text-red-800">Заблокирован</span>
+                        {% else %}
+                            <span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">Активен</span>
+                        {% endif %}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {{ user.created_at|datetime }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}

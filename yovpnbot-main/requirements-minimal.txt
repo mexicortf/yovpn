@@ -1,0 +1,49 @@
+# YoVPN Bot - Минимальные зависимости для продакшена
+# Используйте этот файл для быстрой установки только необходимых пакетов
+
+# Telegram Bot Framework
+aiogram==3.4.1
+aiohttp==3.9.1
+
+# Configuration
+python-decouple==3.8
+python-dotenv==1.0.0
+
+# Database
+aiosqlite==0.19.0
+sqlalchemy==2.0.23
+alembic==1.13.1
+
+# Caching
+redis==5.0.1
+
+# HTTP Client
+httpx==0.25.2
+aiofiles==23.2.1
+
+# Data Validation
+pydantic==2.5.0
+pydantic-settings==2.1.0
+
+# Monitoring (опционально)
+sentry-sdk==1.38.0
+
+# Logging
+structlog==23.2.0
+colorama==0.4.6
+
+# QR Code Generation
+qrcode==7.4.2
+Pillow==10.1.0
+
+# Security
+cryptography==43.0.3
+passlib==1.7.4
+
+# Utilities
+python-dateutil==2.8.2
+pytz==2023.3
+
+# Performance
+uvloop==0.19.0
+orjson==3.9.10

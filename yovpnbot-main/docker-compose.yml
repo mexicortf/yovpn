@@ -1,0 +1,146 @@
+version: '3.8'
+
+services:
+  # ========================================
+  # MySQL Database
+  # ========================================
+  mysql:
+    image: mysql:8.0
+    container_name: yovpn_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-changeme}
+      MYSQL_DATABASE: yovpn
+      MYSQL_USER: yovpn
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-yovpn_password}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - yovpn_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ========================================
+  # Redis Cache
+  # ========================================
+  redis:
+    image: redis:7-alpine
+    container_name: yovpn_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - yovpn_network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  # ========================================
+  # Telegram Bot
+  # ========================================
+  bot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: yovpn_bot
+    restart: unless-stopped
+    command: python -u bot/main.py
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: mysql+aiomysql://yovpn:${MYSQL_PASSWORD:-yovpn_password}@mysql:3306/yovpn
+      REDIS_URL: redis://redis:6379/0
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - yovpn_network
+    volumes:
+      - ./logs:/app/logs
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ========================================
+  # Admin Panel
+  # ========================================
+  admin:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: yovpn_admin
+    restart: unless-stopped
+    command: uvicorn admin.main:app --host 0.0.0.0 --port 8080
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: mysql+aiomysql://yovpn:${MYSQL_PASSWORD:-yovpn_password}@mysql:3306/yovpn
+      REDIS_URL: redis://redis:6379/0
+    ports:
+      - "${ADMIN_PORT:-8080}:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - yovpn_network
+    volumes:
+      - ./logs:/app/logs
+      - ./admin/static:/app/admin/static
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ========================================
+  # Database Migrations (run once)
+  # ========================================
+  migrations:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: yovpn_migrations
+    command: alembic upgrade head
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: mysql+aiomysql://yovpn:${MYSQL_PASSWORD:-yovpn_password}@mysql:3306/yovpn
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - yovpn_network
+    profiles:
+      - migrations
+
+# ========================================
+# Volumes
+# ========================================
+volumes:
+  mysql_data:
+    driver: local
+  redis_data:
+    driver: local
+
+# ========================================
+# Networks
+# ========================================
+networks:
+  yovpn_network:
+    driver: bridge

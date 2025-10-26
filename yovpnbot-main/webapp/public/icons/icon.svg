@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- Gradient Background -->
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0ea5e9;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0369a1;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background Circle -->
+  <circle cx="256" cy="256" r="240" fill="url(#grad)"/>
+  
+  <!-- VPN Shield Icon -->
+  <path d="M256 80 
+           L160 120 L160 240 
+           Q160 320 256 400 
+           Q352 320 352 240 
+           L352 120 Z" 
+        fill="white" opacity="0.9"/>
+  
+  <!-- Lightning Bolt -->
+  <path d="M280 160 L220 260 L260 260 L240 360 L320 240 L280 240 Z" 
+        fill="#0ea5e9"/>
+  
+  <!-- Text YoVPN -->
+  <text x="256" y="460" 
+        font-family="Arial, sans-serif" 
+        font-size="48" 
+        font-weight="bold" 
+        fill="white" 
+        text-anchor="middle">YoVPN</text>
+</svg>

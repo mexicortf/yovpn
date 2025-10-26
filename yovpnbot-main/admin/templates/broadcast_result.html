@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}Результат рассылки - YoVPN Admin{% endblock %}
+{% block page_title %}📡 Результат рассылки{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+    <!-- Success Card -->
+    <div class="card bg-green-50 border-2 border-green-200 mb-6">
+        <div class="text-center">
+            <div class="text-6xl mb-4">✅</div>
+            <h3 class="text-2xl font-bold text-green-800 mb-2">Рассылка завершена!</h3>
+            <p class="text-green-700">Сообщение отправлено пользователям</p>
+        </div>
+    </div>
+    
+    <!-- Statistics -->
+    <div class="grid grid-cols-3 gap-4 mb-6">
+        <div class="card text-center">
+            <p class="text-4xl font-bold text-green-600">{{ success_count }}</p>
+            <p class="text-sm text-gray-600 mt-2">Успешно</p>
+        </div>
+        
+        <div class="card text-center">
+            <p class="text-4xl font-bold text-red-600">{{ failed_count }}</p>
+            <p class="text-sm text-gray-600 mt-2">Ошибок</p>
+        </div>
+        
+        <div class="card text-center">
+            <p class="text-4xl font-bold text-blue-600">{{ total }}</p>
+            <p class="text-sm text-gray-600 mt-2">Всего</p>
+        </div>
+    </div>
+    
+    <!-- Info -->
+    <div class="card">
+        <h3 class="font-semibold mb-3">ℹ️ Информация</h3>
+        <ul class="space-y-2 text-sm text-gray-700">
+            <li>✅ Успешность: {{ (success_count / total * 100)|round(1) }}%</li>
+            {% if failed_count > 0 %}
+            <li>⚠️ Некоторые пользователи могли заблокировать бота или удалить аккаунт</li>
+            {% endif %}
+            <li>📊 Статистика обновлена в реальном времени</li>
+        </ul>
+    </div>
+    
+    <!-- Actions -->
+    <div class="flex gap-4 mt-6">
+        <a href="/admin/broadcast" class="flex-1 px-6 py-3 bg-blue-500 text-white text-center rounded-lg hover:bg-blue-600 font-semibold">
+            📡 Новая рассылка
+        </a>
+        <a href="/admin" class="flex-1 px-6 py-3 bg-gray-500 text-white text-center rounded-lg hover:bg-gray-600 font-semibold">
+            🏠 На главную
+        </a>
+    </div>
+</div>
+{% endblock %}

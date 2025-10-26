@@ -1,0 +1,77 @@
+# YoVPN Bot Dockerfile - Optimized for Production
+# Multi-stage build for minimal image size and maximum performance
+
+# Stage 1: Base image with system dependencies
+FROM python:3.11-slim as base
+
+# Set environment variables for Python optimization
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1
+
+# Install only essential system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc \
+    libffi-dev \
+    libssl-dev \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
+
+# Stage 2: Builder for Python dependencies
+FROM base as builder
+
+WORKDIR /build
+
+# Copy only requirements first for better layer caching
+COPY requirements-prod.txt .
+
+# Install Python dependencies to a virtual environment
+RUN python -m venv /opt/venv && \
+    /opt/venv/bin/pip install --no-cache-dir -r requirements-prod.txt
+
+# Stage 3: Final production image
+FROM python:3.11-slim as production
+
+# Copy Python environment variables
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PATH="/opt/venv/bin:$PATH" \
+    PYTHONPATH=/app
+
+# Install only runtime dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libssl3 \
+    ca-certificates \
+    curl \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
+
+# Create non-root user for security
+RUN groupadd -r yovpn && useradd -r -g yovpn yovpn
+
+# Set working directory
+WORKDIR /app
+
+# Copy virtual environment from builder
+COPY --from=builder /opt/venv /opt/venv
+
+# Copy application code
+COPY --chown=yovpn:yovpn . .
+
+# Create necessary directories with proper permissions
+RUN mkdir -p data uploads temp logs && \
+    chown -R yovpn:yovpn /app
+
+# Switch to non-root user
+USER yovpn
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:8080/health || exit 1
+
+# Expose ports
+EXPOSE 8000 8080
+
+# Default command
+CMD ["python", "bot/main.py"]

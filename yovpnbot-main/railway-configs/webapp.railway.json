@@ -1,0 +1,57 @@
+{
+  "name": "webapp",
+  "build": {
+    "builder": "NIXPACKS"
+  },
+  "deploy": {
+    "restartPolicyType": "ON_FAILURE",
+    "healthcheckPath": "/",
+    "healthcheckTimeout": 300
+  },
+  "source": {
+    "rootDirectory": "webapp"
+  },
+  "env": {
+    "NODE_ENV": {
+      "default": "production"
+    },
+    "NEXT_PUBLIC_TELEGRAM_BOT_TOKEN": {
+      "description": "Telegram Bot Token",
+      "required": true
+    },
+    "NEXT_PUBLIC_API_BASE_URL": {
+      "description": "API Backend URL",
+      "required": true
+    },
+    "NEXT_PUBLIC_BASE_URL": {
+      "description": "WebApp Public URL",
+      "required": true
+    },
+    "NEXT_PUBLIC_DEV_MODE": {
+      "default": "false"
+    },
+    "NEXT_PUBLIC_ANDROID_APK_URL": {
+      "description": "Android APK download URL",
+      "default": "https://github.com/yovpn/v2raytun/releases/latest/download/v2raytun-android.apk"
+    },
+    "NEXT_PUBLIC_IOS_APP_STORE_URL": {
+      "description": "iOS App Store URL",
+      "default": "https://apps.apple.com/app/v2raytun"
+    },
+    "NEXT_PUBLIC_MACOS_DMG_URL": {
+      "description": "macOS DMG download URL",
+      "default": "https://github.com/yovpn/v2raytun/releases/latest/download/v2raytun-macos.dmg"
+    },
+    "NEXT_PUBLIC_WINDOWS_EXE_URL": {
+      "description": "Windows EXE download URL",
+      "default": "https://github.com/yovpn/v2raytun/releases/latest/download/v2raytun-windows.exe"
+    },
+    "NEXT_PUBLIC_ANDROID_TV_APK_URL": {
+      "description": "Android TV APK download URL",
+      "default": "https://github.com/yovpn/v2raytun/releases/latest/download/v2raytun-tv.apk"
+    }
+  },
+  "networking": {
+    "generateDomain": true
+  }
+}

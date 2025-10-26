@@ -1,0 +1,67 @@
+# Dependencies
+node_modules/
+venv/
+env/
+.venv/
+
+# Build outputs
+.next/
+out/
+build/
+dist/
+*.pyc
+__pycache__/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+webapp.log
+api.log
+
+# Testing
+coverage/
+.pytest_cache/
+.coverage
+
+# Misc
+.turbo
+*.pem
+.vercel
+.cache
+
+# Docker
+docker-compose.override.yml
+
+# Process IDs
+.webapp.pid
+.api.pid
+
+# Certificates
+*.key
+*.crt
+*.pem
+certs/
+
+# User data
+data/
+data.json
+*.tmp

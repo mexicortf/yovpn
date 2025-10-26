@@ -1,0 +1,22 @@
+# Nixpacks configuration for Railway deployment
+# This file tells Railway how to build and run the Next.js webapp
+
+[phases.setup]
+nixPkgs = ["nodejs-18_x", "npm-9_x"]
+
+[phases.install]
+cmds = [
+  "npm ci --include=dev"
+]
+
+[phases.build]
+cmds = [
+  "npm run build"
+]
+
+[start]
+cmd = "npm start"
+
+[variables]
+NODE_ENV = "production"
+NEXT_TELEMETRY_DISABLED = "1"

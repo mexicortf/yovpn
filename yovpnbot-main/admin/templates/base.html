@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}YoVPN Admin Panel{% endblock %}</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom Styles -->
+    <style>
+        .sidebar-link {
+            @apply flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors;
+        }
+        
+        .sidebar-link.active {
+            @apply bg-gray-700 text-white border-l-4 border-blue-500;
+        }
+        
+        .card {
+            @apply bg-white rounded-lg shadow-md p-6;
+        }
+        
+        .stat-card {
+            @apply bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-lg p-6 shadow-lg;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <!-- Sidebar -->
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-gray-800 text-white flex-shrink-0">
+            <div class="p-4">
+                <h1 class="text-2xl font-bold flex items-center gap-2">
+                    💎 YoVPN Admin
+                </h1>
+            </div>
+            
+            <nav class="mt-8">
+                <a href="/admin" class="sidebar-link {% if request.url.path == '/admin' %}active{% endif %}">
+                    <i class="fas fa-home w-6"></i>
+                    <span>Главная</span>
+                </a>
+                
+                <a href="/admin/statistics" class="sidebar-link {% if '/statistics' in request.url.path %}active{% endif %}">
+                    <i class="fas fa-chart-line w-6"></i>
+                    <span>Статистика</span>
+                </a>
+                
+                <a href="/admin/users" class="sidebar-link {% if '/users' in request.url.path %}active{% endif %}">
+                    <i class="fas fa-users w-6"></i>
+                    <span>Пользователи</span>
+                </a>
+                
+                <a href="/admin/balance" class="sidebar-link {% if '/balance' in request.url.path %}active{% endif %}">
+                    <i class="fas fa-wallet w-6"></i>
+                    <span>Управление балансом</span>
+                </a>
+                
+                <a href="/admin/subscriptions" class="sidebar-link {% if '/subscriptions' in request.url.path %}active{% endif %}">
+                    <i class="fas fa-satellite-dish w-6"></i>
+                    <span>Подписки</span>
+                </a>
+                
+                <a href="/admin/broadcast" class="sidebar-link {% if '/broadcast' in request.url.path %}active{% endif %}">
+                    <i class="fas fa-bullhorn w-6"></i>
+                    <span>Рассылка</span>
+                </a>
+                
+                <a href="/admin/marzban" class="sidebar-link {% if '/marzban' in request.url.path %}active{% endif %}">
+                    <i class="fas fa-server w-6"></i>
+                    <span>Marzban</span>
+                </a>
+                
+                <a href="/admin/security" class="sidebar-link {% if '/security' in request.url.path %}active{% endif %}">
+                    <i class="fas fa-shield-alt w-6"></i>
+                    <span>Безопасность</span>
+                </a>
+                
+                <a href="/admin/settings" class="sidebar-link {% if '/settings' in request.url.path %}active{% endif %}">
+                    <i class="fas fa-cog w-6"></i>
+                    <span>Настройки</span>
+                </a>
+                
+                <a href="/admin/docs" class="sidebar-link" target="_blank">
+                    <i class="fas fa-book w-6"></i>
+                    <span>API Docs</span>
+                </a>
+            </nav>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="flex-1 overflow-y-auto">
+            <!-- Header -->
+            <header class="bg-white shadow-sm">
+                <div class="px-8 py-4 flex items-center justify-between">
+                    <h2 class="text-2xl font-semibold text-gray-800">
+                        {% block page_title %}Dashboard{% endblock %}
+                    </h2>
+                    
+                    <div class="flex items-center gap-4">
+                        <span class="text-sm text-gray-600">⚙️ Admin Panel</span>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Content -->
+            <div class="p-8">
+                {% block content %}{% endblock %}
+            </div>
+        </main>
+    </div>
+    
+    {% block scripts %}{% endblock %}
+</body>
+</html>

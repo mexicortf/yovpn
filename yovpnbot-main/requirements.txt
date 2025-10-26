@@ -1,0 +1,84 @@
+# ========================================
+# YoVPN Bot Dependencies
+# Полный набор зависимостей для проекта
+# ========================================
+
+# === TELEGRAM BOT ===
+aiogram==3.4.1
+aiohttp==3.9.1
+
+# === WEB FRAMEWORK (ADMIN PANEL) ===
+fastapi==0.109.0
+uvicorn[standard]==0.27.0
+jinja2==3.1.3
+python-multipart==0.0.6
+
+# === DATABASE ===
+sqlalchemy==2.0.25
+alembic==1.13.1
+aiomysql==0.2.0
+asyncmy==0.2.9
+pymysql==1.1.0
+
+# === CONFIGURATION ===
+python-decouple==3.8
+python-dotenv==1.0.0
+pydantic==2.5.3
+pydantic-settings==2.1.0
+
+# === CACHING ===
+redis==5.0.1
+aioredis==2.0.1
+
+# === HTTP CLIENT ===
+httpx==0.26.0
+aiofiles==23.2.1
+
+# === DATA VALIDATION & PARSING ===
+email-validator==2.1.0
+
+# === SECURITY ===
+cryptography==43.0.3
+passlib[bcrypt]==1.7.4
+
+# === UTILITIES ===
+python-dateutil==2.8.2
+pytz==2023.3.post1
+
+# === MONITORING & LOGGING ===
+structlog==24.1.0
+colorama==0.4.6
+
+# === QR CODE ===
+qrcode[pil]==7.4.2
+Pillow==10.2.0
+
+# === DEVELOPMENT ===
+pytest==7.4.4
+pytest-asyncio==0.23.3
+pytest-cov==4.1.0
+black==24.1.1
+isort==5.13.2
+flake8==7.0.0
+mypy==1.8.0
+
+# === PERFORMANCE ===
+uvloop==0.19.0
+orjson==3.9.13
+
+# === SYSTEM MONITORING ===
+psutil==5.9.6
+
+# === DATABASE DRIVER ===
+# Для MySQL используем aiomysql
+# Если нужна поддержка PostgreSQL, раскомментируйте:
+# asyncpg==0.29.0
+
+# === PAYMENT SYSTEMS (Optional) ===
+# Раскомментируйте если нужна интеграция с платежными системами
+# yookassa==3.0.0
+# stripe==7.14.0
+
+# === SENTRY (Optional) ===
+# Раскомментируйте для мониторинга ошибок
+# sentry-sdk==1.40.0

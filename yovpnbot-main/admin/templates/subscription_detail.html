@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block title %}Подписка {{ subscription.marzban_username }} - YoVPN Admin{% endblock %}
+{% block page_title %}🛰️ Подписка: {{ subscription.marzban_username }}{% endblock %}
+
+{% block content %}
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Subscription Info -->
+    <div class="lg:col-span-2">
+        <div class="card">
+            <h3 class="text-xl font-semibold mb-4">📋 Информация о подписке</h3>
+            
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <p class="text-sm text-gray-600">ID</p>
+                    <p class="font-semibold">{{ subscription.id }}</p>
+                </div>
+                
+                <div>
+                    <p class="text-sm text-gray-600">Marzban Username</p>
+                    <p class="font-semibold font-mono">{{ subscription.marzban_username }}</p>
+                </div>
+                
+                <div>
+                    <p class="text-sm text-gray-600">Пользователь</p>
+                    <p class="font-semibold">
+                        <a href="/admin/users/{{ user.id }}" class="text-blue-600 hover:underline">
+                            {{ user.username or user.tg_id }}
+                        </a>
+                    </p>
+                </div>
+                
+                <div>
+                    <p class="text-sm text-gray-600">Статус</p>
+                    {% if subscription.is_active %}
+                        <span class="px-3 py-1 text-sm rounded-full bg-green-100 text-green-800">✅ Активна</span>
+                    {% else %}
+                        <span class="px-3 py-1 text-sm rounded-full bg-red-100 text-red-800">❌ Неактивна</span>
+                    {% endif %}
+                </div>
+                
+                <div>
+                    <p class="text-sm text-gray-600">Дата начала</p>
+                    <p class="font-semibold">{{ subscription.start_date|datetime }}</p>
+                </div>
+                
+                <div>
+                    <p class="text-sm text-gray-600">Дата окончания</p>
+                    <p class="font-semibold">{{ subscription.end_date|datetime if subscription.end_date else "Бессрочно" }}</p>
+                </div>
+                
+                <div>
+                    <p class="text-sm text-gray-600">Лимит трафика</p>
+                    <p class="font-semibold">
+                        {% if subscription.data_limit > 0 %}
+                            {{ (subscription.data_limit / 1024 / 1024 / 1024)|round(0) }} GB
+                        {% else %}
+                            ∞ Безлимит
+                        {% endif %}
+                    </p>
+                </div>
+                
+                <div>
+                    <p class="text-sm text-gray-600">Использовано</p>
+                    <p class="font-semibold">{{ (subscription.used_traffic / 1024 / 1024 / 1024)|round(2) }} GB</p>
+                </div>
+                
+                <div class="col-span-2">
+                    <p class="text-sm text-gray-600">Создано</p>
+                    <p class="font-semibold">{{ subscription.created_at|datetime }}</p>
+                </div>
+            </div>
+            
+            {% if subscription.subscription_url %}
+            <div class="mt-6 p-4 bg-gray-50 rounded-lg">
+                <p class="text-sm text-gray-600 mb-2">Subscription URL</p>
+                <code class="block p-3 bg-white rounded border break-all text-sm">{{ subscription.subscription_url }}</code>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Actions -->
+    <div>
+        <div class="card">
+            <h3 class="text-xl font-semibold mb-4">⚡ Действия</h3>
+            
+            <div class="space-y-3">
+                {% if subscription.is_active %}
+                <form method="POST" action="/admin/subscriptions/{{ subscription.id }}/deactivate">
+                    <button type="submit" class="w-full px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600">
+                        ❌ Деактивировать
+                    </button>
+                </form>
+                {% else %}
+                <form method="POST" action="/admin/subscriptions/{{ subscription.id }}/activate">
+                    <button type="submit" class="w-full px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600">
+                        ✅ Активировать
+                    </button>
+                </form>
+                {% endif %}
+                
+                <a href="/admin/users/{{ user.id }}" class="block w-full px-4 py-2 bg-blue-500 text-white text-center rounded-lg hover:bg-blue-600">
+                    👤 Профиль пользователя
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mt-6">
+    <a href="/admin/subscriptions" class="text-blue-600 hover:underline">← Назад к списку подписок</a>
+</div>
+{% endblock %}

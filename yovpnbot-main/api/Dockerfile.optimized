@@ -1,0 +1,70 @@
+# YoVPN API Dockerfile - Optimized for Production
+# Multi-stage build for FastAPI backend
+
+# Stage 1: Base image
+FROM python:3.11-slim as base
+
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc \
+    libffi-dev \
+    libssl-dev \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
+
+# Stage 2: Builder
+FROM base as builder
+
+WORKDIR /build
+
+# Copy requirements
+COPY requirements.txt .
+
+# Install dependencies to virtual environment
+RUN python -m venv /opt/venv && \
+    /opt/venv/bin/pip install --no-cache-dir -r requirements.txt
+
+# Stage 3: Production
+FROM python:3.11-slim as production
+
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PATH="/opt/venv/bin:$PATH" \
+    PYTHONPATH=/app
+
+# Install runtime dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libssl3 \
+    ca-certificates \
+    curl \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
+
+# Create non-root user
+RUN groupadd -r apiuser && useradd -r -g apiuser apiuser
+
+WORKDIR /app
+
+# Copy virtual environment
+COPY --from=builder /opt/venv /opt/venv
+
+# Copy application code
+COPY --chown=apiuser:apiuser app ./app
+
+# Switch to non-root user
+USER apiuser
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:${PORT:-8000}/api/health || exit 1
+
+# Expose port (Railway uses $PORT)
+EXPOSE ${PORT:-8000}
+
+# Start command
+CMD uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000} --workers 1

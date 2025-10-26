@@ -1,0 +1,36 @@
+# Database Migrations
+
+Этот каталог содержит миграции базы данных Alembic для YoVPN Bot.
+
+## Команды
+
+### Создать новую миграцию
+```bash
+alembic revision --autogenerate -m "Описание изменений"
+```
+
+### Применить миграции
+```bash
+alembic upgrade head
+```
+
+### Откатить миграцию
+```bash
+alembic downgrade -1
+```
+
+### Посмотреть историю миграций
+```bash
+alembic history
+```
+
+### Посмотреть текущую версию
+```bash
+alembic current
+```
+
+## Примечания
+
+- Миграции используют async SQLAlchemy для работы с MySQL
+- DATABASE_URL должен быть установлен в переменных окружения
+- Формат: `mysql+aiomysql://user:password@host:port/database`

@@ -1,0 +1,45 @@
+# Основные зависимости
+python-decouple==3.8
+python-dotenv==1.0.0
+requests==2.31.0
+urllib3==2.0.7
+qrcode==7.4.2
+Pillow==10.1.0
+
+# Асинхронные зависимости
+aiogram==3.4.1
+aiohttp==3.9.1
+aiomysql==0.2.0
+aioredis==2.0.1
+
+# Валидация и безопасность - ИСПРАВЛЕНО: обновлена версия cryptography
+pydantic==2.5.2
+marshmallow==3.20.1
+cryptography==43.0.3
+bcrypt==4.1.2
+
+# Мониторинг и логирование
+sentry-sdk==1.39.2
+prometheus-client==0.19.0
+structlog==23.2.0
+
+# Тестирование
+pytest==7.4.3
+pytest-asyncio==0.21.1
+pytest-cov==4.1.0
+pytest-mock==3.12.0
+
+# Безопасность и аудит
+bandit==1.7.5
+safety==3.2.11  # Updated to fix packaging conflict
+
+
+# Производительность
+uvloop==0.19.0
+orjson==3.9.10
+ujson==5.8.0
+
+# Дополнительные утилиты
+redis==5.0.1
+celery==5.3.4
+dramatiq==1.15.0

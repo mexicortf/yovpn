@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+
+{% block title %}Настройки - YoVPN Admin{% endblock %}
+{% block page_title %}⚙️ Настройки{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    {% if request.query_params.get('updated') %}
+    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6">
+        ✅ Настройки успешно обновлены
+    </div>
+    {% endif %}
+    
+    <!-- Mode Toggles -->
+    <div class="card mb-6">
+        <h3 class="text-xl font-semibold mb-4">🔧 Режимы работы</h3>
+        
+        <div class="space-y-4">
+            <!-- Maintenance Mode -->
+            <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                <div>
+                    <h4 class="font-semibold">🛠️ Режим техобслуживания</h4>
+                    <p class="text-sm text-gray-600">Бот не будет отвечать на сообщения пользователей</p>
+                </div>
+                <form method="POST" action="/admin/settings/mode/maintenance">
+                    <button type="submit" class="px-4 py-2 rounded-lg font-semibold {% if settings.maintenance_mode == 'true' %}bg-red-500 text-white{% else %}bg-green-500 text-white{% endif %}">
+                        {% if settings.maintenance_mode == 'true' %}
+                            Включен (Выключить)
+                        {% else %}
+                            Выключен (Включить)
+                        {% endif %}
+                    </button>
+                </form>
+            </div>
+            
+            <!-- WebApp Mode -->
+            <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                <div>
+                    <h4 class="font-semibold">🌐 WebApp режим</h4>
+                    <p class="text-sm text-gray-600">Использовать WebApp интерфейс (иначе текстовый)</p>
+                </div>
+                <form method="POST" action="/admin/settings/mode/webapp">
+                    <button type="submit" class="px-4 py-2 rounded-lg font-semibold {% if settings.webapp_enabled == 'true' %}bg-green-500 text-white{% else %}bg-gray-500 text-white{% endif %}">
+                        {% if settings.webapp_enabled == 'true' %}
+                            Включен (Выключить)
+                        {% else %}
+                            Выключен (Включить)
+                        {% endif %}
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Settings Form -->
+    <div class="card">
+        <h3 class="text-xl font-semibold mb-4">💰 Настройки бота</h3>
+        
+        <form method="POST" action="/admin/settings/update" class="space-y-6">
+            <!-- Hidden inputs for modes -->
+            <input type="hidden" name="maintenance_mode" value="{{ settings.maintenance_mode }}">
+            <input type="hidden" name="webapp_enabled" value="{{ settings.webapp_enabled }}">
+            
+            <!-- Welcome Bonus -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    💎 Приветственный бонус (рубли)
+                </label>
+                <input type="number" name="welcome_bonus" value="{{ settings.welcome_bonus }}" 
+                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                <p class="text-sm text-gray-500 mt-1">Бонус при первом запуске бота (3 дня = 12 руб)</p>
+            </div>
+            
+            <!-- Daily Price -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    💵 Цена за день (рубли)
+                </label>
+                <input type="number" name="daily_price" value="{{ settings.daily_price }}" 
+                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                <p class="text-sm text-gray-500 mt-1">Стоимость одного дня подписки</p>
+            </div>
+            
+            <!-- Referral Bonus -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    🎁 Реферальный бонус (рубли)
+                </label>
+                <input type="number" name="referral_bonus" value="{{ settings.referral_bonus }}" 
+                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                <p class="text-sm text-gray-500 mt-1">Бонус за приглашенного друга (2 дня = 8 руб)</p>
+            </div>
+            
+            <!-- Min Deposit -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    💳 Минимальное пополнение (рубли)
+                </label>
+                <input type="number" name="min_deposit" value="{{ settings.min_deposit }}" 
+                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                <p class="text-sm text-gray-500 mt-1">Минимальная сумма пополнения баланса</p>
+            </div>
+            
+            <!-- Support Username -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    💬 Username поддержки
+                </label>
+                <input type="text" name="support_username" value="{{ settings.support_username }}" 
+                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                       placeholder="@YoVPNSupport">
+            </div>
+            
+            <!-- Channel Username -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    📢 Username канала
+                </label>
+                <input type="text" name="channel_username" value="{{ settings.channel_username }}" 
+                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                       placeholder="@YoVPN">
+            </div>
+            
+            <!-- Submit Button -->
+            <div class="flex justify-end">
+                <button type="submit" class="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 font-semibold">
+                    💾 Сохранить настройки
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
